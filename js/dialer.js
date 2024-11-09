@@ -21,7 +21,7 @@ const nearbyKeys = [
 	[2, 4]
 ]
 
-countPaths = memoize(countPaths)
+// countPaths = memoize(countPaths)
 
 function reachableKeys(startingDigit) {
 	return nearbyKeys[startingDigit]
@@ -29,13 +29,21 @@ function reachableKeys(startingDigit) {
 
 function countPaths(startingDigit, hopCount) {
 	if (hopCount === 0) return 1
-	let pathCount = 0
+	let priorPathCounts = Array(10).fill(1)
 
-	for (let digit of nearbyKeys[startingDigit]) {
-		pathCount += countPaths(digit, hopCount - 1)
+
+	for (let hops = 0; hops < hopCount; hops++) {
+		let pathCounts = Array(10).fill(0)
+
+		for (let digit = 0; digit < 10; digit++) {
+			for (let n of nearbyKeys[digit]) {
+				pathCounts[digit] += priorPathCounts[n]
+			}
+		}
+		priorPathCounts = pathCounts
 	}
 
-	return pathCount;
+	return priorPathCounts[startingDigit]
 }
 
 function listAcyclicPaths(startingDigit) {
@@ -68,15 +76,15 @@ function followPath(path, paths) {
 }
 
 
-function memoize(fn) {
-	let cache = {}
+// function memoize(fn) {
+// 	let cache = {}
 
-	return function memoized(start, length) {
-		let key = `${start}:${length}`
-		if (!cache[key]) {
-			cache[key] = fn(start, length)
-		}
+// 	return function memoized(start, length) {
+// 		let key = `${start}:${length}`
+// 		if (!cache[key]) {
+// 			cache[key] = fn(start, length)
+// 		}
 
-		return cache[key]
-	}
-}
+// 		return cache[key]
+// 	}
+// }
