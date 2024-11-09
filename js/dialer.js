@@ -21,6 +21,8 @@ const nearbyKeys = [
 	[2, 4]
 ]
 
+countPaths = memoize(countPaths)
+
 function reachableKeys(startingDigit) {
 	return nearbyKeys[startingDigit]
 }
@@ -62,5 +64,19 @@ function followPath(path, paths) {
 
 	if (!pathForwardFound) {
 		paths.push(path)
+	}
+}
+
+
+function memoize(fn) {
+	let cache = {}
+
+	return function memoized(start, length) {
+		let key = `${start}:${length}`
+		if (!cache[key]) {
+			cache[key] = fn(start, length)
+		}
+
+		return cache[key]
 	}
 }
